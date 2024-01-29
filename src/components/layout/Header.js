@@ -1,5 +1,6 @@
 'use client'
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Header() {
@@ -8,6 +9,7 @@ export default function Header() {
   return (
     <header className="flex sm:flex flex-col md:flex-row lg:flex-row items-center justify-between">
       <nav className="flex sm:flex flex-col md:flex-row lg:flex-row gap-6 text-gray-600 font-semibold items-center">
+
         <a
           className="text-primary font-semibold text-3xl"
           href="/"
@@ -21,20 +23,34 @@ export default function Header() {
           <Link href={''}>Contact</Link>
         </div>
       </nav>
-      <nav className="flex items-center gap-4 text-gray-600 mt-3 lg:mt-0">
+      <div className="border-2 md:border-0 lg:border-0 border-gray-300 w-full md:hidden lg:hidden my-3 md:my-0 lg:my-0" />
+
+      <nav className="flex w-fit items-center gap-4 text-gray-600 mt-3 lg:mt-0">
         {
           session?.status == 'authenticated' && (
-            <>
-              <Link href={'/profile'} className="whitespace-nowrap text-lg text-gray-500 font-semibold capitalize">
-                {session?.data?.user?.name !== undefined ? session?.data?.user?.name : session?.data?.user?.email}
-              </Link>
-              <button
-                className="bg-primary text-white rounded-full px-5 py-2"
-                onClick={() => signOut()}
-              >
-                Log Out
-              </button>
-            </>
+            <div className="w-full flex items-center justify-center gap-3 p-0">
+              <div className="relative w-12 h-12 object-cover justify-center items-center">
+                <Image
+                  src={session?.data?.user?.image}
+                  fill
+                  priority={true}
+                  sizes="20vw"
+                  alt={"user-icon"}
+                  className="rounded-full items-center"
+                />
+              </div>
+              <div className="flex items-center gap-3 justify-center">
+                <Link href={'/profile'} className="whitespace-nowrap text-lg text-gray-500 font-semibold capitalize">
+                  {session?.data?.user?.name !== undefined ? session?.data?.user?.name : session?.data?.user?.email}
+                </Link>
+                <button
+                  className="bg-primary text-white rounded-full px-5 py-2"
+                  onClick={() => signOut()}
+                >
+                  Log Out
+                </button>
+              </div>
+            </div>
           )
         }
         {

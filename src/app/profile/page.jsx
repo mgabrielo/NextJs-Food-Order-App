@@ -87,13 +87,14 @@ export default function ProfilePage() {
         <div className="flex flex-col md:flex-row lg:flex-row gap-2 items-center">
           <div className="relative justify-center items-center">
             {image && (
-              <div className="relative w-[150px] h-[150px] object-contain justify-center items-center my-2">
+              <div className="relative w-[150px] h-[150px] object-cover justify-center items-center my-2">
                 <Image
                   src={image}
                   fill
                   priority={true}
+                  sizes="20vw"
                   alt={"user-icon"}
-                  className="rounded-full w-auto h-auto items-center px-2 mb-4"
+                  className="rounded-full items-center px-2 mb-4"
                 />
               </div>
             )}

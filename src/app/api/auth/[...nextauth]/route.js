@@ -34,13 +34,17 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    jwt({ token, trigger, session }) {
+    async jwt({ token, trigger, session }) {
       if (trigger === "update" && session?.name && session?.image) {
-        token.name = session.name
         token.image = session.image
+        token.name = session.name
       }
-      return token
-    }
+      return { ...token, ...session };
+    },
+    async session({ session, token }) {
+      session.user = token;
+      return session;
+    },
   },
 }
 
