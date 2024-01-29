@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Header() {
   const session = useSession()
-  // console.log(session?.data)
+  console.log(session?.data)
   return (
     <header className="flex sm:flex flex-col md:flex-row lg:flex-row items-center justify-between">
       <nav className="flex sm:flex flex-col md:flex-row lg:flex-row gap-6 text-gray-600 font-semibold items-center">

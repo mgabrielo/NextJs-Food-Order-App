@@ -9,8 +9,8 @@ export async function PUT(req) {
     console.log(data)
     const session = await getServerSession(authOptions)
     console.log('the-session', session)
-    if ('name' in data) {
-        await User.updateOne({ email: session?.user?.email }, { name: data?.name })
+    if ('name' in data && 'image' in data) {
+        await User.updateOne({ email: session?.user?.email }, { name: data?.name, image: data?.image })
         return Response.json(true)
     }
 }

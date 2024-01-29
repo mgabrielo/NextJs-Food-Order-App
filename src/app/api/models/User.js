@@ -18,6 +18,9 @@ const UserSchema = new mongoose.Schema({
                 new Error(' password must be at least 5 characters')
             }
         }
+    },
+    image: {
+        type: String
     }
 }, { timestamps: true })
 

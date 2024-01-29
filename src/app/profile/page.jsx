@@ -11,7 +11,7 @@ export default function ProfilePage() {
   const [userName, setUserName] = useState("");
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
+  const [image, setImage] = useState("");
   useEffect(() => {
     if (status == "authenticated") {
       const usernameExtract =
@@ -22,6 +22,11 @@ export default function ProfilePage() {
               session?.data?.user?.email.indexOf("@")
             );
       setUserName(usernameExtract);
+      const profileImgExtract =
+        session?.data?.user?.image !== undefined
+          ? session?.data?.user?.image
+          : "https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png";
+      setImage(profileImgExtract);
     }
     if (saved)
       setTimeout(() => {
@@ -40,11 +45,11 @@ export default function ProfilePage() {
     setSaved(false);
     setIsSaving(true);
     await axios
-      .put("/api/profile", { name: userName })
+      .put("/api/profile", { name: userName, image: image })
       .then((res) => {
         setSaved(true);
         if (res.status == 200) {
-          update({ name: userName });
+          update({ name: userName, image: image });
         }
       })
       .catch((err) => {
@@ -61,7 +66,11 @@ export default function ProfilePage() {
     if (files?.length === 1 && files !== undefined) {
       console.log(files[0]);
       formData.set("files", e.target.files[0]);
-      await axios.post("/api/upload", formData);
+      await axios.post("/api/upload", formData).then((res) => {
+        if (res.status == 200 && res.data) {
+          setImage(res.data);
+        }
+      });
     }
   };
   return (
@@ -78,17 +87,17 @@ export default function ProfilePage() {
         <div className="flex gap-2 items-center">
           <div>
             <div className="rounded-md relative justify-center">
-              <Image
-                src={
-                  "https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png"
-                }
-                width={100}
-                height={100}
-                priority={true}
-                style={{ objectFit: "contain" }}
-                alt={"user-icon"}
-                className="rounded-full w-auto h-auto items-center px-2 mb-4"
-              />
+              {image && (
+                <Image
+                  src={image}
+                  width={100}
+                  height={100}
+                  priority={true}
+                  style={{ objectFit: "contain" }}
+                  alt={"user-icon"}
+                  className="rounded-full w-auto h-auto items-center px-2 mb-4"
+                />
+              )}
               <label>
                 <div className="flex justify-center items-center">
                   <input

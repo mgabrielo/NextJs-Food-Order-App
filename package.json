@@ -9,13 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.501.0",
     "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
     "mongoose": "^8.1.1",
     "next": "14.1.0",
     "next-auth": "^4.24.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "uniqid": "^5.4.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

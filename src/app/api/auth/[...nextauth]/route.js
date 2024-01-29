@@ -35,8 +35,9 @@ export const authOptions = {
   ],
   callbacks: {
     jwt({ token, trigger, session }) {
-      if (trigger === "update" && session?.name) {
+      if (trigger === "update" && session?.name && session?.image) {
         token.name = session.name
+        token.image = session.image
       }
       return token
     }
