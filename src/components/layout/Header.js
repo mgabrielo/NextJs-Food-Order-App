@@ -11,12 +11,12 @@ export default function Header() {
       <nav className="flex sm:flex flex-col md:flex-row lg:flex-row gap-6 text-gray-600 font-semibold items-center">
 
         <a
-          className="text-primary font-semibold text-3xl"
+          className="text-primary font-semibold text-xl md:text-2xl lg:text-3xl "
           href="/"
         >
           Great Pizza
         </a>
-        <div className="space-x-3 text-xl pt-2">
+        <div className="space-x-3 text-md md:text-lg lg:text-xl items-center">
           <Link href={'/'}>Home</Link>
           <Link href={''}>Menu</Link>
           <Link href={''}>About</Link>
@@ -40,7 +40,7 @@ export default function Header() {
                 />
               </div>
               <div className="flex items-center gap-3 justify-center">
-                <Link href={'/profile'} className="whitespace-nowrap text-lg text-gray-500 font-semibold capitalize">
+                <Link href={'/profile'} className="whitespace-nowrap text-sm md:text-md lg:text-lg text-gray-500 font-semibold capitalize">
                   {session?.data?.user?.name !== undefined ? session?.data?.user?.name : session?.data?.user?.email}
                 </Link>
                 <button

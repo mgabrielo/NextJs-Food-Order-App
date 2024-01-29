@@ -78,7 +78,7 @@ export default function ProfilePage() {
       <h1 className="text-primary text-center text-2xl font-semibold mb-4">
         Profile
       </h1>
-      <form className="w-full md:max-w-xl mx-auto">
+      <form className="w-full md:max-w-xl lg:max-w-2xl mx-auto">
         {saved && (
           <h2 className="text-center bg-green-200 border border-green-700 p-3 rounded-lg text-green-800 my-5">
             Profile Saved
@@ -87,7 +87,7 @@ export default function ProfilePage() {
         <div className="flex flex-col md:flex-row lg:flex-row gap-2 items-center">
           <div className="relative justify-center items-center">
             {image && (
-              <div className="relative w-[150px] h-[150px] object-cover justify-center items-center my-2">
+              <div className="relative w-[100px] md:w-[120px] lg:w-[150px] h-[100px] md:h-[120px] lg:h-[150px] object-cover justify-center items-center my-2">
                 <Image
                   src={image}
                   fill
