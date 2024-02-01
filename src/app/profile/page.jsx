@@ -5,27 +5,54 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import EditProfile from "../../components/icons/EditProfile";
+import InfoBox from "../../components/layout/InfoBox";
+import SuccessBox from "../../components/layout/SuccessBox";
+import { toast } from "react-hot-toast";
 
 export default function ProfilePage() {
   const session = useSession();
+  const defaultImage =
+    "https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png";
   const { data, status, update } = useSession();
-  const [userName, setUserName] = useState("");
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [image, setImage] = useState("");
-
+  const [isUploading, setIsUploading] = useState(false);
+  const [otherFormData, setOtherFormData] = useState({
+    name: "",
+    email: "",
+    image: defaultImage,
+    phone: "",
+    streetAddress: "",
+    postalCode: "",
+    city: "",
+    country: "",
+  });
   useEffect(() => {
     if (status == "authenticated") {
-      const usernameExtract =
-        data?.user?.name !== undefined
-          ? data?.user?.name
-          : data?.user?.email.substring(0, data?.user?.email.indexOf("@"));
-      setUserName(usernameExtract);
-      const profileImgExtract =
-        data?.user?.image !== undefined
-          ? data?.user?.image
-          : "https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png";
-      setImage(profileImgExtract);
+      const fetchData = async () => {
+        await axios.get("/api/profile").then((res) => {
+          if (res.status == 200 && res.data !== undefined) {
+            console.log(res.data);
+            setOtherFormData((prev) => ({
+              ...prev,
+              name: res.data?.name == undefined ? "" : res.data?.name,
+              email: res.data?.email,
+              image:
+                res.data?.image == undefined ? defaultImage : res.data.image,
+              phone: res.data?.phone == undefined ? "" : res.data?.phone,
+              streetAddress:
+                res.data?.streetAddress == undefined
+                  ? ""
+                  : res.data?.streetAddress,
+              postalCode:
+                res.data?.postalCode == undefined ? "" : res.data?.postalCode,
+              city: res.data?.city == undefined ? "" : res.data?.city,
+              country: res.data?.country == undefined ? "" : res.data?.country,
+            }));
+          }
+        });
+      };
+      fetchData();
     }
     if (saved)
       setTimeout(() => {
@@ -45,14 +72,13 @@ export default function ProfilePage() {
     setSaved(false);
     setIsSaving(true);
     await axios
-      .put("/api/profile", { name: userName, image: image })
+      .put("/api/profile", otherFormData)
       .then((res) => {
+        update({ name: otherFormData.name, image: otherFormData.image });
         setSaved(true);
-        if (res.status == 200) {
-          update({ name: userName, image: image });
-        }
       })
       .catch((err) => {
+        toast.error("Update Error");
         console.log(err);
       })
       .finally(() => {
@@ -66,30 +92,35 @@ export default function ProfilePage() {
     if (files?.length === 1 && files !== undefined) {
       console.log(files[0]);
       formData.set("files", e.target.files[0]);
-      await axios.post("/api/upload", formData).then((res) => {
-        if (res.status == 200 && res.data) {
-          setImage(res.data);
-        }
-      });
+      setIsUploading(true);
+      await axios
+        .post("/api/upload", formData)
+        .then((res) => {
+          if (res.status == 200 && res.data) {
+            setOtherFormData({ ...otherFormData, image: res.data });
+          }
+        })
+        .finally(() => {
+          setIsUploading(false);
+        });
     }
   };
+
   return (
     <section className="mt-8">
       <h1 className="text-primary text-center text-2xl font-semibold mb-4">
         Profile
       </h1>
       <form className="w-full md:max-w-xl lg:max-w-2xl mx-auto">
-        {saved && (
-          <h2 className="text-center bg-green-200 border border-green-700 p-3 rounded-lg text-green-800 my-5">
-            Profile Saved
-          </h2>
-        )}
+        {saved && <SuccessBox>Profile Saved</SuccessBox>}
+        {isSaving && <InfoBox>Saving Profile In Progress</InfoBox>}
+        {isUploading && <InfoBox>Image Upload In Progress</InfoBox>}
         <div className="flex flex-col md:flex-row lg:flex-row gap-2 items-center">
           <div className="relative justify-center items-center">
-            {image && (
+            {otherFormData && otherFormData?.image && (
               <div className="relative w-[100px] md:w-[120px] lg:w-[150px] h-[100px] md:h-[120px] lg:h-[150px] object-cover justify-center items-center my-2">
                 <Image
-                  src={image}
+                  src={otherFormData?.image}
                   fill
                   priority={true}
                   sizes="20vw"
@@ -112,14 +143,86 @@ export default function ProfilePage() {
               </div>
             </label>
           </div>
-          <div className="space-y-5 w-full md:grow lg:grow px-5 md:px-0 lg:px-0">
+          <div className="w-full md:grow lg:grow px-5 md:px-0 lg:px-0  space-y-5">
             <input
               type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              disabled={isSaving}
+              value={otherFormData?.name}
+              onChange={(e) =>
+                setOtherFormData({
+                  ...otherFormData,
+                  name: e?.target?.value,
+                })
+              }
+              style={{ paddingLeft: 12 }}
+              placeholder="username"
             />
-            <input type="email" value={data?.user?.email} disabled={true} />
+            <input
+              type="email"
+              value={otherFormData?.email}
+              style={{ paddingLeft: 12 }}
+              placeholder="email"
+              readOnly
+            />
+            <input
+              type="tel"
+              value={otherFormData?.phone}
+              onChange={(e) =>
+                setOtherFormData({
+                  ...otherFormData,
+                  phone: e?.target?.value,
+                })
+              }
+              style={{ paddingLeft: 12 }}
+              placeholder="phone number"
+            />
+            <input
+              type="text"
+              value={otherFormData?.streetAddress}
+              onChange={(e) =>
+                setOtherFormData({
+                  ...otherFormData,
+                  streetAddress: e?.target?.value,
+                })
+              }
+              style={{ paddingLeft: 12 }}
+              placeholder="street address"
+            />
+            <input
+              type="text"
+              value={otherFormData?.postalCode}
+              onChange={(e) =>
+                setOtherFormData({
+                  ...otherFormData,
+                  postalCode: e?.target?.value,
+                })
+              }
+              style={{ paddingLeft: 12 }}
+              placeholder="postalcode"
+            />
+            <input
+              type="text"
+              value={otherFormData?.city}
+              onChange={(e) =>
+                setOtherFormData({
+                  ...otherFormData,
+                  city: e?.target?.value,
+                })
+              }
+              style={{ paddingLeft: 12 }}
+              placeholder="city"
+            />
+            <input
+              type="text"
+              value={otherFormData?.country}
+              onChange={(e) =>
+                setOtherFormData({
+                  ...otherFormData,
+                  country: e?.target?.value,
+                })
+              }
+              style={{ paddingLeft: 12 }}
+              placeholder="country"
+            />
             <button onClick={(e) => handleProfileUpdate(e)} disabled={isSaving}>
               {isSaving ? "Saving Update..." : "Submit"}
             </button>
