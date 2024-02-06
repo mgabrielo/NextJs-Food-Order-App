@@ -3,12 +3,12 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EditProfile from "../../components/icons/EditProfile";
 import InfoBox from "../../components/layout/InfoBox";
 import SuccessBox from "../../components/layout/SuccessBox";
 import { toast } from "react-hot-toast";
-
+import UserTabs from "../../components/layout/UserTabs";
 export default function ProfilePage() {
   const session = useSession();
   const defaultImage =
@@ -17,6 +17,7 @@ export default function ProfilePage() {
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [profileFetched, setProfileFetched] = useState(false);
   const [otherFormData, setOtherFormData] = useState({
     name: "",
     email: "",
@@ -26,13 +27,15 @@ export default function ProfilePage() {
     postalCode: "",
     city: "",
     country: "",
+    admin: false,
   });
+
   useEffect(() => {
     if (status == "authenticated") {
+      setProfileFetched(false);
       const fetchData = async () => {
         await axios.get("/api/profile").then((res) => {
           if (res.status == 200 && res.data !== undefined) {
-            console.log(res.data);
             setOtherFormData((prev) => ({
               ...prev,
               name: res.data?.name == undefined ? "" : res.data?.name,
@@ -48,7 +51,9 @@ export default function ProfilePage() {
                 res.data?.postalCode == undefined ? "" : res.data?.postalCode,
               city: res.data?.city == undefined ? "" : res.data?.city,
               country: res.data?.country == undefined ? "" : res.data?.country,
+              admin: res?.data?.admin == undefined ? false : res.data?.admin,
             }));
+            setProfileFetched(true);
           }
         });
       };
@@ -60,7 +65,7 @@ export default function ProfilePage() {
       }, 2500);
   }, [session, status, saved]);
 
-  if (status === "loading") {
+  if (status === "loading" || !profileFetched) {
     return <p>Loading...</p>;
   }
   if (status === "unauthenticated") {
@@ -108,15 +113,19 @@ export default function ProfilePage() {
 
   return (
     <section className="mt-8">
-      <h1 className="text-primary text-center text-2xl font-semibold mb-4">
-        Profile
-      </h1>
+      {otherFormData.admin ? (
+        <UserTabs isAdmin={otherFormData.admin} />
+      ) : (
+        <h1 className="text-primary text-center text-2xl font-semibold mb-4">
+          Profile
+        </h1>
+      )}
       <form className="w-full md:max-w-xl lg:max-w-2xl mx-auto">
         {saved && <SuccessBox>Profile Saved</SuccessBox>}
         {isSaving && <InfoBox>Saving Profile In Progress</InfoBox>}
         {isUploading && <InfoBox>Image Upload In Progress</InfoBox>}
         <div className="flex flex-col md:flex-row lg:flex-row gap-2 items-center">
-          <div className="relative justify-center items-center">
+          <div className="relative justify-center items-center md:-top-36 lg:-top-36">
             {otherFormData && otherFormData?.image && (
               <div className="relative w-[100px] md:w-[120px] lg:w-[150px] h-[100px] md:h-[120px] lg:h-[150px] object-cover justify-center items-center my-2">
                 <Image

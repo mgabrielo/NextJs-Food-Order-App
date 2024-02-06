@@ -1,23 +1,24 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import axios from "axios";
 import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Header() {
   const { status, update, data } = useSession()
+  const defaultImage = "https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png"
   const [profileData, setProfileData] = useState({
     email: '',
-    image: "https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png",
+    image: defaultImage,
     name: ""
   })
 
   useEffect(() => {
     const fetchData = async () => {
       await axios.get("/api/profile").then((res) => {
-        if (res.status == 200 && res.data !== undefined) {
-          setProfileData({ email: res.data?.email, })
+        if (res.status == 200 && res.data !== undefined && res.data?.image !== undefined) {
+          setProfileData({ email: res.data?.email, image: res.data?.image })
           update({ name: res.data?.name, image: res.data?.image })
         }
       });
@@ -51,10 +52,10 @@ export default function Header() {
           status == 'authenticated' && profileData && (
             <div className="w-full flex items-center justify-center gap-3 p-0">
               {
-                profileData.image !== null && data?.user?.image && data?.user?.image?.length > 0 && (
+                profileData.image && (
                   <div className="relative w-12 h-12 object-cover justify-center items-center">
                     <Image
-                      src={data?.user?.image || profileData.image}
+                      src={data?.user?.image !== undefined && data?.user?.image !== null ? data?.user?.image : profileData.image}
                       fill
                       priority={true}
                       sizes="20vw"
