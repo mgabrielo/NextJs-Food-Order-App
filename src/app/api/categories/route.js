@@ -7,3 +7,20 @@ export async function POST(req) {
         return Response.json(result)
     }
 }
+
+export async function GET() {
+    const result = await Category.find()
+    if (result) {
+        return Response.json(result)
+    } else {
+        return new Response.json({})
+    }
+}
+
+export async function PUT(req) {
+    const { _id, name } = await req.json()
+    const res = await Category.updateOne({ _id }, { name })
+    if (res) {
+        return Response.json(true)
+    }
+}

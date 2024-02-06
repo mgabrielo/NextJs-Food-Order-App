@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 
 export default function UserTabs({ isAdmin }) {
   const path = usePathname()
-  console.log(path)
   return (
     <>
       {isAdmin && (
