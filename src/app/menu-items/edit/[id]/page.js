@@ -56,6 +56,19 @@ export default function page() {
   }
 
 
+  const handleMenuItemDelete = async (e) => {
+    e.preventDefault()
+    await axios.delete('/api/menu-items', { params: { id } }).then((res) => {
+      if (res.status == 200) {
+        toast.success('menu-item deleted successfully')
+      }
+    }).catch(() => {
+      toast.error('menu item could not delete')
+    }).finally(() => {
+      setRedirectToItems(true)
+    })
+  }
+
   return (
     <section className="mt-8">
       <div>
@@ -71,7 +84,11 @@ export default function page() {
         </Link>
       </div>
       {menuItems && <MenuItemForm menuItem={menuItems} onSubmit={handleFormSubmit} />}
-
+      <div className="max-w-lg  mx-auto my-3">
+        <div className="max-w-xs ml-auto pl-0 ">
+          <button onClick={(e) => handleMenuItemDelete(e)}>Delete Menu Item</button>
+        </div>
+      </div>
     </section>
   )
 }

@@ -60,6 +60,21 @@ export default function CategoriesPage() {
         });
     }
   }
+  const handleCategoryDelete = async (_id) => {
+    await axios
+      .delete(`/api/categories/`, { params: { _id } })
+      .then((res) => {
+        if (res.status == 200) {
+          toast.success("category deleted successfully");
+        }
+      })
+      .catch(() => {
+        toast.error("category not deleted");
+      })
+      .finally(() => {
+        fetchData();
+      });
+  };
   return (
     <section className="mt-8 max-w-lg mx-auto">
       <UserTabs isAdmin={true} />
@@ -79,32 +94,55 @@ export default function CategoriesPage() {
               onChange={(e) => setCategoryName(e.target.value)}
             />
           </div>
-          <div className="pb-3">
+          <div className="flex gap-2 pb-3">
             <button
               className="bg-primary text-white border-0"
               onClick={(e) => handleCategorySubmit(e)}
             >
               {editedCategory ? "Update" : "Create"}
             </button>
+            {editedCategory && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditedCategory(null), setCategoryName("");
+                }}
+              >
+                Cancel
+              </button>
+            )}
           </div>
         </div>
       </form>
 
       <div>
-        <h2 className="my-4 text-sm text-gray-600">Edit Category</h2>
+        <h2 className="my-4 text-sm text-gray-600">Existing Category</h2>
         {categories &&
           categories.length > 0 &&
           categories.map((category, index) => (
-            <button
+            <div
               key={index}
-              onClick={() => {
-                setEditedCategory(category);
-                setCategoryName(category?.name);
-              }}
-              className="bg-gray-300 rounded-lg px-4 py-2 flex gap-2 mb-3 border-0"
+              className="bg-gray-300 rounded-lg px-4 py-2 flex gap-2 mb-3 border-0 items-center"
             >
-              <p>{category?.name}</p>
-            </button>
+              <div className="grow">{category?.name}</div>
+              <div className=" flex gap-2 ">
+                <button
+                  onClick={() => {
+                    setEditedCategory(category);
+                    setCategoryName(category?.name);
+                  }}
+                  type="button"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleCategoryDelete(category._id)}
+                  type="button"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           ))}
       </div>
     </section>

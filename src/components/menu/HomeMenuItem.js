@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function MenuItem() {
+export default function HomeMenuItem() {
     return (
         <div className='bg-gray-200 px-4 py-2 
         rounded-lg text-center mt-10

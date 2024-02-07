@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
-import MenuItem from '../menu/MenuItem'
+import HomeMenuItem from '../menu/HomeMenuItem'
 import SectionHeader from './SectionHeader'
 
 export default function HomeMenu() {
@@ -29,12 +29,12 @@ export default function HomeMenu() {
             </div>
 
             <div className='grid grid-cols-2 lg:grid-cols-3 gap-4 relative mt-10'>
-                <MenuItem />
-                <MenuItem />
-                <MenuItem />
-                <MenuItem />
-                <MenuItem />
-                <MenuItem />
+                <HomeMenuItem />
+                <HomeMenuItem />
+                <HomeMenuItem />
+                <HomeMenuItem />
+                <HomeMenuItem />
+                <HomeMenuItem />
             </div>
         </section>
     )

@@ -30,3 +30,11 @@ export async function PUT(req) {
         return Response.json(true)
     }
 }
+
+export async function DELETE(req) {
+    const url = new URL(req.url)
+    const id = url.searchParams.get('id')
+    console.log(id)
+    await MenuItem.findByIdAndDelete(id)
+    return Response.json(true)
+}
