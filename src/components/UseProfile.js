@@ -12,10 +12,11 @@ export function useProfile() {
             await axios.get('/api/profile').then((res) => {
                 if (res.status == 200 && res.data !== undefined) {
                     console.log('profile-data', res.data)
-                    setData(res.data.admin)
+                    setData(res?.data?.admin)
                 }
             }).catch((err) => {
                 console.log(err)
+                setData(false)
             }).finally(() => {
                 setLoading(false)
             })

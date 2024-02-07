@@ -9,6 +9,7 @@ import InfoBox from "../../components/layout/InfoBox";
 import SuccessBox from "../../components/layout/SuccessBox";
 import { toast } from "react-hot-toast";
 import UserTabs from "../../components/layout/UserTabs";
+import EditableImage from "../../components/layout/EditableImage";
 export default function ProfilePage() {
   const session = useSession();
   const defaultImage =
@@ -91,25 +92,25 @@ export default function ProfilePage() {
       });
   };
 
-  const handleFileChange = async (e) => {
-    const files = e.target.files;
-    const formData = new FormData();
-    if (files?.length === 1 && files !== undefined) {
-      console.log(files[0]);
-      formData.set("files", e.target.files[0]);
-      setIsUploading(true);
-      await axios
-        .post("/api/upload", formData)
-        .then((res) => {
-          if (res.status == 200 && res.data) {
-            setOtherFormData({ ...otherFormData, image: res.data });
-          }
-        })
-        .finally(() => {
-          setIsUploading(false);
-        });
-    }
-  };
+  // const handleFileChange = async (e) => {
+  //   const files = e.target.files;
+  //   const formData = new FormData();
+  //   if (files?.length === 1 && files !== undefined) {
+  //     console.log(files[0]);
+  //     formData.set("files", e.target.files[0]);
+  //     setIsUploading(true);
+  //     await axios
+  //       .post("/api/upload", formData)
+  //       .then((res) => {
+  //         if (res.status == 200 && res.data) {
+  //           setOtherFormData({ ...otherFormData, image: res.data });
+  //         }
+  //       })
+  //       .finally(() => {
+  //         setIsUploading(false);
+  //       });
+  //   }
+  // };
 
   return (
     <section className="mt-8">
@@ -126,7 +127,11 @@ export default function ProfilePage() {
         {isUploading && <InfoBox>Image Upload In Progress</InfoBox>}
         <div className="flex flex-col md:flex-row lg:flex-row gap-2 items-center">
           <div className="relative justify-center items-center md:-top-36 lg:-top-36">
-            {otherFormData && otherFormData?.image && (
+            <EditableImage
+              otherFormData={otherFormData}
+              setOtherFormData={setOtherFormData}
+            />
+            {/* {otherFormData && otherFormData?.image && (
               <div className="relative w-[100px] md:w-[120px] lg:w-[150px] h-[100px] md:h-[120px] lg:h-[150px] object-cover justify-center items-center my-2">
                 <Image
                   src={otherFormData?.image}
@@ -150,7 +155,7 @@ export default function ProfilePage() {
                   <p>Edit</p>
                 </span>
               </div>
-            </label>
+            </label> */}
           </div>
           <div className="w-full md:grow lg:grow px-5 md:px-0 lg:px-0  space-y-5">
             <input

@@ -14,7 +14,7 @@ export default function UserTabs({ isAdmin }) {
               Profile
             </Link>
             <Link className={path === '/categories' ? "active" : ''} href={'/categories'} > Categories</Link>
-            <Link className={path === '/menu-items' ? "active" : ''} href={'/menu-items'}> Menu Items</Link>
+            <Link className={path.includes('menu-items') ? "active" : ''} href={'/menu-items'}> Menu Items</Link>
             <Link className={path === '/users' ? "active" : ''} href={'/users'}>Users</Link>
           </>
         </div>
