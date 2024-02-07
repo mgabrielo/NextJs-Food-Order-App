@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 import Link from "next/link";
 import LeftArrow from "@/components/icons/LeftArrow";
 import { redirect } from "next/navigation";
+import MenuItemPriceProps from "../../../components/layout/MenuItemPriceProps";
 
 export default function page() {
   const { loading, data } = useProfile();
@@ -16,6 +17,8 @@ export default function page() {
   const [name, setName] = useState("");
   const [basePrice, setBasePrice] = useState(Number(""));
   const [redirectToItems, setRedirectToItems] = useState(false);
+  const [sizes, setSizes] = useState([]);
+  const [extraIngridentPrices, setExtraIngridentPrices] = useState([]);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +28,8 @@ export default function page() {
         image: image.image,
         description,
         basePrice,
+        sizes,
+        extraIngridentPrices,
       })
       .then((res) => {
         if (res.status == 200) {
@@ -78,6 +83,18 @@ export default function page() {
               type="text"
               value={basePrice}
               onChange={(e) => setBasePrice(e.target.value)}
+            />
+            <MenuItemPriceProps
+              props={sizes}
+              setProps={setSizes}
+              name={"Sizes"}
+              buttonLabel={"Add Item Size"}
+            />
+            <MenuItemPriceProps
+              props={extraIngridentPrices}
+              setProps={setExtraIngridentPrices}
+              name={"Extra Ingridents"}
+              buttonLabel={"Add Ingrident Prices"}
             />
             <button
               className="bg-primary text-white border-0 mb-3"

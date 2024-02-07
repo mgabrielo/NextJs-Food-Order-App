@@ -1,13 +1,15 @@
 'use client'
 import { useEffect, useState } from 'react'
 import EditableImage from "@/components/layout/EditableImage";
+import MenuItemPriceProps from './MenuItemPriceProps';
 
 export default function MenuItemForm({ onSubmit, menuItem }) {
-    console.log(menuItem)
     const [image, setImage] = useState({ image: menuItem?.image ? menuItem?.image : '' });
     const [description, setDescription] = useState(menuItem?.description || '');
     const [name, setName] = useState(menuItem?.name || '');
     const [basePrice, setBasePrice] = useState(Number(menuItem?.basePrice || ''));
+    const [sizes, setSizes] = useState(menuItem?.sizes || [])
+    const [extraIngridentPrices, setExtraIngridentPrices] = useState(menuItem?.extraIngridentPrices || [])
 
     return (
         <form
@@ -36,9 +38,21 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
                         value={basePrice}
                         onChange={(e) => setBasePrice(e.target.value)}
                     />
+                    <MenuItemPriceProps
+                        props={sizes}
+                        setProps={setSizes}
+                        name={'Sizes'}
+                        buttonLabel={'Add Item Size'}
+                    />
+                    <MenuItemPriceProps
+                        props={extraIngridentPrices}
+                        setProps={setExtraIngridentPrices}
+                        name={'Extra Ingridents'}
+                        buttonLabel={'Add Ingrident Prices'}
+                    />
                     <button
                         className="bg-primary text-white border-0 mb-3"
-                        onClick={(e) => onSubmit(e, { name, description, image, basePrice })}
+                        onClick={(e) => onSubmit(e, { name, description, image, basePrice, sizes, extraIngridentPrices })}
                     >
                         Save Menu Item
                     </button>
