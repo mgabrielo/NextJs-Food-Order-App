@@ -4,13 +4,14 @@ import { useProfile } from "../../components/UseProfile";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { usePathname } from "next/navigation";
 
 export default function CategoriesPage() {
   const { loading, data } = useProfile();
   const [categoryName, setCategoryName] = useState("");
   const [categories, setCategories] = useState([]);
   const [editedCategory, setEditedCategory] = useState(null);
-
+  const path = usePathname();
   useEffect(() => {
     fetchData();
   }, []);
@@ -78,7 +79,7 @@ export default function CategoriesPage() {
   return (
     <section className="mt-8 max-w-lg mx-auto">
       <UserTabs isAdmin={true} />
-      {loading && <AdminLoader />}
+      {loading && path.includes("categories") && <AdminLoader />}
       <form className="mt-8">
         <div className="flex gap-2 items-end justify-center">
           <div className="grow">

@@ -24,6 +24,7 @@ export async function PUT(req) {
         basePrice: otherData?.basePrice,
         image: image,
         sizes: otherData?.sizes,
+        category: otherData?.category,
         extraIngridentPrices: otherData?.extraIngridentPrices,
     })
     if (res) {

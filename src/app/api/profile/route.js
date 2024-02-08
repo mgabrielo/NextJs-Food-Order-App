@@ -18,8 +18,13 @@ export async function GET() {
 export async function PUT(req) {
     mongoose.connect(process.env.MONGODB_URI)
     const data = await req.json()
-    const session = await getServerSession(authOptions)
-    await User.updateOne({ email: session?.user?.email }, data)
+    const { _id, ...otherData } = data
+    if (_id) {
+        await User.updateOne({ _id }, otherData)
+    } else {
+        const session = await getServerSession(authOptions)
+        await User.updateOne({ email: session?.user?.email }, data)
+    }
     return Response.json(true)
 }
 

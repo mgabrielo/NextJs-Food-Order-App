@@ -85,7 +85,7 @@ export default function page() {
       </div>
       {menuItems && <MenuItemForm menuItem={menuItems} onSubmit={handleFormSubmit} />}
       <div className="max-w-lg  mx-auto my-3">
-        <div className="max-w-xs ml-auto pl-0 ">
+        <div className="max-w-xs ml-auto pl-0 pr-3">
           <button onClick={(e) => handleMenuItemDelete(e)}>Delete Menu Item</button>
         </div>
       </div>

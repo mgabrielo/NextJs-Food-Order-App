@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { useProfile } from "@/components/UseProfile";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EditableImage from "@/components/layout/EditableImage";
 import UserTabs from "@/components/layout/UserTabs";
 import { toast } from "react-hot-toast";
@@ -19,6 +19,24 @@ export default function page() {
   const [redirectToItems, setRedirectToItems] = useState(false);
   const [sizes, setSizes] = useState([]);
   const [extraIngridentPrices, setExtraIngridentPrices] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState("");
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      await axios
+        .get("/api/categories")
+        .then((res) => {
+          if (res.status == 200 && res.data) {
+            setCategories(res.data);
+          }
+        })
+        .catch(() => {
+          toast.error("could not fetch categories");
+        });
+    };
+    fetchCategories();
+  }, []);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +48,7 @@ export default function page() {
         basePrice,
         sizes,
         extraIngridentPrices,
+        category,
       })
       .then((res) => {
         if (res.status == 200) {
@@ -78,6 +97,19 @@ export default function page() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
+            <label>Menu Category Select</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              {categories &&
+                categories.length > 0 &&
+                categories.map((category, index) => (
+                  <option value={category?._id} key={index}>
+                    {category?.name}
+                  </option>
+                ))}
+            </select>
             <label>Menu Base Price</label>
             <input
               type="text"

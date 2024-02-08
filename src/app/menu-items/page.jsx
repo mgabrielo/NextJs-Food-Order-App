@@ -7,11 +7,12 @@ import Link from "next/link";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function page() {
   const { loading, data } = useProfile();
   const [menuItems, setMenuItems] = useState([]);
-
+  const path = usePathname();
   useEffect(() => {
     async function fetchData() {
       await axios
@@ -31,6 +32,7 @@ export default function page() {
   return (
     <section className="mt-8 max-w-xl mx-auto">
       <UserTabs isAdmin={data} />
+      {loading && path.includes("menu-items") && <p>Loading...</p>}
       <div className="mt-8">
         <Link className="button flex" href={"/menu-items/new"}>
           Create New Menu Item

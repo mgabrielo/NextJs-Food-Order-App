@@ -7,6 +7,7 @@ section.hero{
     grid-template-columns: .8fr .4fr;
 }
 
+select,
 input[type="email"],
 input[type="password"],
 input[type="tel"],
