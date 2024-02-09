@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 export function useProfile() {
     const [data, setData] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [userData, setUserData] = useState({})
 
     useEffect(() => {
         const fetchData = async () => {
@@ -12,6 +13,7 @@ export function useProfile() {
             await axios.get('/api/profile').then((res) => {
                 if (res.status == 200 && res.data !== undefined) {
                     // console.log('profile-data', res.data)
+                    setUserData(res.data)
                     setData(res?.data?.admin)
                 }
             }).catch((err) => {
@@ -24,5 +26,5 @@ export function useProfile() {
         fetchData()
     }, [])
 
-    return { loading, data }
+    return { loading, data, userData }
 }

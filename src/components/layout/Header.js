@@ -5,6 +5,7 @@ import axios from "axios";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { CartContext } from "../AppContext";
+import CartIcon from '../icons/CartIcon'
 
 export default function Header() {
   const { status, update, data } = useSession()
@@ -73,8 +74,11 @@ export default function Header() {
                 </Link>
 
                 {cartProducts && cartProducts?.length > 0 && (
-                  <Link href={'/cart'} className="flex w-full p-0">
-                    <span className="flex gap-2">Cart ({cartProducts.length})</span>
+                  <Link href={'/cart'} className="relative mx-2">
+                    <CartIcon />
+                    <span className="absolute -top-3 -right-4 bg-primary text-white text-sm rounded-full px-2 py-0.5">
+                      {cartProducts.length}
+                    </span>
                   </Link>
                 )}
 

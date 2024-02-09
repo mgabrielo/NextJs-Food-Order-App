@@ -8,16 +8,23 @@ export default function HomeMenuItem(menuItem) {
     const { name, description, image, basePrice, sizes, extraIngridentPrices } = menuItem
     const { addToCart } = useContext(CartContext)
     const [showPopup, setShowPopup] = useState(false)
-    const [selectedSize, setSelectedSize] = useState(null)
+    const [selectedSize, setSelectedSize] = useState(sizes?.[0] || null)
     const [selectedExtras, setSelectedExtras] = useState([])
-    console.log(selectedSize)
-    const handleAddToCart = (e, item) => {
-        e.preventDefault();
-        if (sizes?.length === 0 && extraIngridentPrices?.length === 0) {
-            addToCart(item)
-            toast.success('Added to Cart')
+
+    const handleAddToCart = (e) => {
+        e.preventDefault()
+        if (showPopup) {
+            addToCart(menuItem, selectedSize, selectedExtras)
+            toast.success('Add to Cart')
+            setShowPopup(false)
         } else {
-            setShowPopup(true)
+            if (sizes?.length === 0 && extraIngridentPrices?.length === 0) {
+                addToCart(menuItem)
+                setShowPopup(false)
+                toast.success('Added to Cart')
+            } else {
+                setShowPopup(true)
+            }
         }
     }
     function handleSelectedExtra(e, extras) {
@@ -30,10 +37,6 @@ export default function HomeMenuItem(menuItem) {
                 return prev.filter((item) => item?.name !== extras?.name)
             })
         }
-    }
-    const containerStyle = {
-        height: 'fit-content',
-        maxHeight: 'calc(100vh-40px)'
     }
 
     let selectedPrice = basePrice
@@ -50,9 +53,18 @@ export default function HomeMenuItem(menuItem) {
     return (
         <>
             {showPopup && (
-                <div className="fixed inset-0 bg-black/60 flex items-center justify-center ">
-                    <div className="bg-white p-2 rounded-lg max-w-md text-center">
-                        <div className=" p-2" style={containerStyle}>
+                <div
+                    onClick={() => setShowPopup(false)}
+                    className="fixed inset-0 bg-black/60 flex items-center justify-center"
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="bg-white p-2 rounded-lg max-w-xl text-center"
+                    >
+                        <div
+                            className="overflow-y-auto w-[350px] md:w-[450px] lg:w-[550px] px-2 py-4"
+                            style={{ maxHeight: 'calc(100vh - 70px)' }}
+                        >
                             <Image
                                 width={200}
                                 height={200}
@@ -107,14 +119,21 @@ export default function HomeMenuItem(menuItem) {
                                     </div>
                                 )
                             }
-                            <button type="button" className="bg-primary text-white">
+                            <button
+                                type="button"
+                                className="bg-primary text-white sticky bottom-2"
+                                onClick={(e) => handleAddToCart(e)}
+                            >
                                 Add To Cart ${selectedPrice > basePrice ? selectedPrice : basePrice}
+                            </button>
+                            <button type="button" className="mt-2" onClick={() => setShowPopup(false)}>
+                                Cancel
                             </button>
                         </div>
                     </div>
                 </div>
             )}
-            <MenuItemTile handleAddToCart={handleAddToCart} menuItem={menuItem} />
+            <MenuItemTile handleAddToCart={handleAddToCart} {...menuItem} />
         </>
     )
 }
